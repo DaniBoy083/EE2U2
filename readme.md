@@ -36,6 +36,18 @@ Fazer download do arquivo **Projeto - Tabela Hash 5a feira.pptx** e seguir as or
 
 Esta parte aguarda a definição dos responsáveis pela equipe.
 
+## O que falta fazer
+
+A parte de ordenação já conta com os cinco algoritmos integrados, menu interativo, leitura de TXT, exibição limitada aos 100 primeiros valores e simulação de tempos com a IA identificada. A configuração de execução e a tabela comparativa também estão disponíveis.
+
+- [ ] Definir quais integrantes ficarão responsáveis pela tabela hash.
+- [ ] Obter e ler o arquivo **Projeto - Tabela Hash 5a feira.pptx** para identificar os requisitos dessa etapa.
+- [ ] Implementar a tabela hash conforme as orientações do material.
+- [ ] Integrar as opções da tabela hash ao menu principal do projeto.
+- [ ] Validar as operações da tabela hash e a navegação entre as duas partes do projeto após a integração.
+- [ ] Atualizar este README com os requisitos e as instruções de uso da tabela hash implementada.
+- [ ] Revisar o projeto completo e realizar a entrega até **18/11/2026, às 23h59**.
+
 ## Como executar
 
 O projeto usa **JDK 17 ou superior** e a biblioteca padrão do Java. O ambiente local foi validado com **OpenJDK Temurin 21.0.10**.
