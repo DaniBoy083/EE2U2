@@ -7,6 +7,8 @@ import ed2.projeto.algoritmosordenacao.MergeSort;
 import ed2.projeto.algoritmosordenacao.QuickSort;
 import ed2.projeto.algoritmosordenacao.SelectionSort;
 import ed2.projeto.algoritmosordenacao.Utils;
+import ed2.projeto.tabelahash.Aluno;
+import ed2.projeto.tabelahash.TabelaHash;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -16,6 +18,7 @@ public class Main {
         Scanner teclado = new Scanner(System.in);
         int[] numeros = new int[0];
         String arquivo = "dados/numeros.txt";
+        TabelaHash tabelaHash = new TabelaHash();
 
         if (args.length > 0) {
             arquivo = args[0];
@@ -35,6 +38,7 @@ public class Main {
             System.out.println("1 - Algoritmos de ordenação");
             System.out.println("2 - Simulação de tempos");
             System.out.println("3 - Carregar outro arquivo");
+            System.out.println("4 - Tabela Hash (Alunos)");
             System.out.println("0 - Sair");
 
             int opcao = lerOpcao(teclado);
@@ -58,6 +62,13 @@ public class Main {
                         System.out.println(numeros.length + " números carregados.");
                     } catch (IOException | IllegalArgumentException erro) {
                         System.out.println("Erro ao carregar os dados. " + erro.getMessage());
+                    }
+                    break;
+                case 4:
+                    if (menuTabelaHash(teclado, tabelaHash)) {
+                        System.out.println("Programa encerrado.");
+                        teclado.close();
+                        return;
                     }
                     break;
                 case 0:
@@ -127,16 +138,110 @@ public class Main {
         }
     }
 
+    private static boolean menuTabelaHash(Scanner teclado, TabelaHash tabelaHash) {
+        while (true) {
+            System.out.println("\nTABELA HASH - CADASTRO DE ALUNOS");
+            System.out.println("1 - Inserir novo Aluno");
+            System.out.println("2 - Buscar Aluno");
+            System.out.println("3 - Remover Aluno");
+            System.out.println("4 - Exibir Tabela Hash");
+            System.out.println("5 - Voltar ao menu principal");
+            System.out.println("0 - Encerrar Sistema");
+
+            int opcao = lerOpcao(teclado);
+
+            switch (opcao) {
+                case 1:
+                    System.out.print("Matrícula (inteiro): ");
+                    Integer matricula = lerInteiro(teclado);
+                    if (matricula == null || matricula < 0) {
+                        System.out.println("Matrícula inválida. Informe um número inteiro não negativo.");
+                        break;
+                    }
+
+                    System.out.print("Nome do aluno: ");
+                    String nome = teclado.hasNextLine() ? teclado.nextLine().trim() : "";
+                    if (nome.isEmpty()) {
+                        System.out.println("O nome do aluno não pode ficar vazio.");
+                        break;
+                    }
+
+                    System.out.print("Idade do aluno: ");
+                    Integer idade = lerInteiro(teclado);
+                    if (idade == null || idade <= 0) {
+                        System.out.println("Idade inválida.");
+                        break;
+                    }
+
+                    Aluno novoAluno = new Aluno(matricula, nome, idade);
+                    if (tabelaHash.inserir(novoAluno)) {
+                        System.out.println("Aluno cadastrado com sucesso!");
+                    } else {
+                        System.out.println("Erro: já existe um aluno cadastrado com a matrícula " + matricula + ".");
+                    }
+                    break;
+
+                case 2:
+                    System.out.print("Matrícula do aluno para busca: ");
+                    Integer matBusca = lerInteiro(teclado);
+                    if (matBusca == null || matBusca < 0) {
+                        System.out.println("Matrícula inválida.");
+                        break;
+                    }
+
+                    Aluno encontrado = tabelaHash.buscar(matBusca);
+                    if (encontrado != null) {
+                        System.out.println("Aluno encontrado: " + encontrado);
+                    } else {
+                        System.out.println("Aluno com matrícula " + matBusca + " não encontrado.");
+                    }
+                    break;
+
+                case 3:
+                    System.out.print("Matrícula do aluno para remoção: ");
+                    Integer matRemocao = lerInteiro(teclado);
+                    if (matRemocao == null || matRemocao < 0) {
+                        System.out.println("Matrícula inválida.");
+                        break;
+                    }
+
+                    if (tabelaHash.remover(matRemocao)) {
+                        System.out.println("Aluno removido com sucesso!");
+                    } else {
+                        System.out.println("Aluno com matrícula " + matRemocao + " não encontrado.");
+                    }
+                    break;
+
+                case 4:
+                    tabelaHash.exibirTabela();
+                    break;
+
+                case 5:
+                    return false;
+
+                case 0:
+                    return true;
+
+                default:
+                    System.out.println("Opção inválida. Tente novamente.");
+            }
+        }
+    }
+
     private static int lerOpcao(Scanner teclado) {
         System.out.print("Escolha uma opção: ");
-        if (!teclado.hasNextLine()) {
-            return 0;
-        }
+        Integer valor = lerInteiro(teclado);
+        return valor != null ? valor : -1;
+    }
 
+    private static Integer lerInteiro(Scanner teclado) {
+        if (!teclado.hasNextLine()) {
+            return null;
+        }
         try {
             return Integer.parseInt(teclado.nextLine().trim());
         } catch (NumberFormatException erro) {
-            return -1;
+            return null;
         }
     }
 }
