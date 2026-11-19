@@ -49,7 +49,11 @@ public class Utils {
 
   public static int[] lerArquivo(String caminho) throws IOException {
 
-    String conteudo = Files.readString(Path.of(caminho), StandardCharsets.UTF_8);
+    return lerConteudo(Files.readString(Path.of(caminho), StandardCharsets.UTF_8));
+  }
+
+  public static int[] lerConteudo(String conteudo) {
+
     if (conteudo.startsWith("\uFEFF")) {
       conteudo = conteudo.substring(1);
     }

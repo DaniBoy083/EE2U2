@@ -58,3 +58,31 @@ Abra o PowerShell na pasta do projeto e execute o comando abaixo. A opção `-Ex
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\executar.ps1
+```
+
+### Carregar dados
+
+No menu principal, escolha **3 — Carregar arquivo (números ou alunos)** e informe o caminho, por exemplo `dados/alunos.txt`. O caminho pode ser colado com ou sem aspas; caminhos relativos partem da pasta do projeto ao executar pelo script.
+
+O programa reconhece automaticamente o formato:
+
+- **Números para ordenação:** inteiros separados por espaços, quebras de linha, vírgulas ou ponto e vírgula, como em `dados/numeros.txt`.
+- **Alunos para a tabela hash:** arquivo UTF-8, sem cabeçalho, com um aluno por linha no formato `matricula;nome;idade`, como em `dados/alunos.txt`:
+
+```text
+101;Ana Silva;20
+112;Bruno Santos;22
+123;Carla Oliveira;19
+```
+
+Para visualizar os alunos importados, escolha **4 — Tabela Hash (Alunos)** no menu principal e depois **4 — Exibir Tabela Hash**.
+
+Também é possível carregar o arquivo de alunos ao iniciar:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\executar.ps1 -Arquivo dados/alunos.txt
+```
+
+Carregar alunos preserva os números já carregados, e carregar números preserva os alunos. Matrículas duplicadas são ignoradas, sem sobrescrever o cadastro existente. Antes de inserir, o programa valida todo o arquivo de alunos: matrícula inteira não negativa, nome não vazio e idade inteira maior que zero. Se houver uma linha inválida, informa o número da linha e não insere alunos daquele arquivo.
+
+Para apresentar o encadeamento com `dados/alunos.txt`, exiba a tabela e observe `101 → 112 → 123` no índice **2**. Use **2 — Buscar Aluno** para buscar a matrícula `123`; depois **3 — Remover Aluno** para remover `112`. Ao exibir novamente, a cadeia será `101 → 123`.

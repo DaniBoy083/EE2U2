@@ -8,8 +8,13 @@ import ed2.projeto.algoritmosordenacao.QuickSort;
 import ed2.projeto.algoritmosordenacao.SelectionSort;
 import ed2.projeto.algoritmosordenacao.Utils;
 import ed2.projeto.tabelahash.Aluno;
+import ed2.projeto.tabelahash.LeitorAlunos;
 import ed2.projeto.tabelahash.TabelaHash;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -27,8 +32,7 @@ public class Main {
         System.out.println("Estrutura de Dados II - 2ª Unidade");
 
         try {
-            numeros = Utils.lerArquivo(arquivo);
-            System.out.println(numeros.length + " números carregados de " + arquivo);
+            numeros = carregarArquivo(arquivo, numeros, tabelaHash);
         } catch (IOException | IllegalArgumentException erro) {
             System.out.println("Erro ao carregar os dados. " + erro.getMessage());
         }
@@ -37,7 +41,7 @@ public class Main {
             System.out.println("\nMENU PRINCIPAL");
             System.out.println("1 - Algoritmos de ordenação");
             System.out.println("2 - Simulação de tempos");
-            System.out.println("3 - Carregar outro arquivo");
+            System.out.println("3 - Carregar arquivo (números ou alunos)");
             System.out.println("4 - Tabela Hash (Alunos)");
             System.out.println("0 - Sair");
 
@@ -58,8 +62,7 @@ public class Main {
                     }
                     arquivo = teclado.nextLine().trim();
                     try {
-                        numeros = Utils.lerArquivo(arquivo);
-                        System.out.println(numeros.length + " números carregados.");
+                        numeros = carregarArquivo(arquivo, numeros, tabelaHash);
                     } catch (IOException | IllegalArgumentException erro) {
                         System.out.println("Erro ao carregar os dados. " + erro.getMessage());
                     }
@@ -79,6 +82,52 @@ public class Main {
                     System.out.println("Opção inválida. Tente novamente.");
             }
         }
+    }
+
+    private static int[] carregarArquivo(String caminho, int[] numerosAtuais, TabelaHash tabelaHash)
+            throws IOException {
+        caminho = caminho.trim();
+        if (caminho.length() >= 2 && ((caminho.startsWith("\"") && caminho.endsWith("\""))
+                || (caminho.startsWith("'") && caminho.endsWith("'")))) {
+            caminho = caminho.substring(1, caminho.length() - 1);
+        }
+        if (caminho.isBlank()) {
+            throw new IllegalArgumentException("Informe o caminho do arquivo TXT.");
+        }
+
+        Path arquivo = Path.of(caminho).toAbsolutePath().normalize();
+        String conteudo = Files.readString(arquivo, StandardCharsets.UTF_8);
+        int[] numerosCarregados;
+
+        try {
+            // Números também podem ser separados por ponto e vírgula.
+            numerosCarregados = Utils.lerConteudo(conteudo);
+        } catch (IllegalArgumentException erroNumeros) {
+            if (!conteudo.contains(";")) {
+                throw erroNumeros;
+            }
+
+            // Valida todas as linhas antes de modificar a tabela existente.
+            List<Aluno> alunos = LeitorAlunos.lerConteudo(conteudo);
+            int inseridos = 0;
+            int duplicados = 0;
+            for (Aluno aluno : alunos) {
+                if (tabelaHash.inserir(aluno)) {
+                    inseridos++;
+                } else {
+                    duplicados++;
+                }
+            }
+
+            System.out.println(inseridos + " alunos carregados na tabela hash de " + arquivo);
+            if (duplicados > 0) {
+                System.out.println(duplicados + " matrículas duplicadas ignoradas.");
+            }
+            return numerosAtuais;
+        }
+
+        System.out.println(numerosCarregados.length + " números carregados de " + arquivo);
+        return numerosCarregados;
     }
 
     private static void menuOrdenacao(Scanner teclado, int[] numeros) {
