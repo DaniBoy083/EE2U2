@@ -1,0 +1,12 @@
+101;Ana Silva;20
+112;Bruno Santos;22
+123;Carla Oliveira;19
+102;Daniel Costa;21
+113;Elisa Souza;23
+104;Felipe Lima;20
+115;Gabriela Alves;24
+110;Hugo Pereira;18
+121;Isabela Rocha;22
+105;João Martins;21
+108;Natália Ribeiro;20
+111;Otávio Barbosa;23
